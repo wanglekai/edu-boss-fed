@@ -1,13 +1,27 @@
 <template>
   <div id="app">
-    <h1>拉勾教育</h1>
-    <!-- 根路由出口，用于渲染路由组件  -->
     <router-view />
   </div>
 </template>
 
-<style lang="scss">
-h1 {
-  color: $primary-color;
+<script>
+// import request from '@/utils/request'
+/*
+  测试接口
+  request({
+    method: 'GET',
+    // 某个后台接口 url
+    // url: 'http://eduboss.lagou.com/boss/v2/api-docs?group=edu-boss-boot'
+    // 某个前台接口 url
+    // url: 'http://edufront.lagou.com/front/ad/getAdList'
+    url: '/front/ad/getAdList'
+  }).then(res => {
+    console.log(res)
+  })
+*/
+export default {
+  name: 'App'
 }
-</style>
+</script>
+
+<style lang="scss"></style>
