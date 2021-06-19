@@ -62,13 +62,15 @@ export default {
         this.isLoading = true
         const { data } = await login(this.form)
         this.isLoading = false
+        // 请求成功后
         if (data.state === 1) {
           this.$message.success('登录成功')
           this.$router.push({ name: 'home' })
+          this.$store.commit('setUser', data.content)
         } else {
+          // 请求错误
           this.$message.error(data.message)
         }
-        console.log(data)
       } catch (error) {
         console.log(error)
       }
