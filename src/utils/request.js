@@ -1,6 +1,7 @@
 // utils/request.js
 // 引入 axios
 import axios from 'axios'
+import store from '@/store'
 
 // axios.create() 可以使用自定义配置新建一个 axios 实例
 const request = axios.create({})
@@ -20,5 +21,10 @@ function getBaseURL (url) {
 request.interceptors.request.use(function (config) {
   // 根据请求的 URL 判断基地址，设置给 config.baseURL
   config.baseURL = getBaseURL(config.url)
+  // 配置 token
+  const { user } = store.state
+  if (user && user.access_token) {
+    config.headers.Authorization = user.access_token
+  }
   return config
 })

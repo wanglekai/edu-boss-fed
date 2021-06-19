@@ -65,8 +65,9 @@ export default {
         // 请求成功后
         if (data.state === 1) {
           this.$message.success('登录成功')
-          this.$router.push({ name: 'home' })
           this.$store.commit('setUser', data.content)
+          // 登录后跳转到上次访问的页面
+          this.$router.push(this.$route.query.redirect || '/')
         } else {
           // 请求错误
           this.$message.error(data.message)

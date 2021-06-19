@@ -1,5 +1,5 @@
 <template>
-  <div>error-page</div>
+  <div>404 - Not Found</div>
 </template>
 <script>
 export default {

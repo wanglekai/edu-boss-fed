@@ -14,21 +14,37 @@
         <!-- Avatar 头像组件 -->
         <el-avatar
         :size="30"
-        src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+        :src="user.portrait || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"
         ></el-avatar>
         <i class="el-icon-arrow-down el-icon--right"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>用户信息</el-dropdown-item>
-        <el-dropdown-item disabled>退出</el-dropdown-item>
+        <el-dropdown-item>{{ user.userName }}</el-dropdown-item>
+        <el-dropdown-item divided>退出</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
   </div>
 </template>
 
 <script>
+import { getUserInfo } from '@/services/user'
+
 export default {
-  name: 'AppHeader'
+  name: 'AppHeader',
+  data () {
+    return { user: {} }
+  },
+  created () {
+    this.loadUserInfo()
+  },
+  methods: {
+    async loadUserInfo () {
+      const { data } = await getUserInfo()
+      if (data.state === 1) {
+        this.user = data.content
+      }
+    }
+  }
 }
 </script>
 

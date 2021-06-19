@@ -1,7 +1,10 @@
 // router/index.js
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '@/store'
+import { Message } from 'element-ui'
 
+Vue.prototype.$message = Message
 /*
   为了进行组件加载优化，应设置 `路由懒加载`
   这时可以使用 import()（mdn 、 vue）来进行模块动态加载，
@@ -22,6 +25,8 @@ const routes = [
   },
   {
     path: '/',
+    // meta 用于指定当前 路由是否进行检测
+    meta: { requiresAuth: true },
     component: () => import(/* webpackChunkName: 'layout' */'@/views/layout/index'),
     children: [
       {
@@ -75,6 +80,26 @@ const routes = [
 
 const router = new VueRouter({
   routes
+})
+
+/*
+ 导航守卫：用于检查 待访问路由的权限
+ 需要已登录的状态 才可以进行访问
+ 否则跳转到 登录页
+*/
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // 只要匹配到 meta: { requiresAuth: true } ，则需要验证
+    if (store.state.user) return next()
+    Message.error('请先登录!')
+    // 身份认证-登录后跳转到上次访问的页面
+    next({
+      name: 'login',
+      query: { redirect: to.fullPath }
+    })
+  } else {
+    next()
+  }
 })
 
 export default router
