@@ -20,7 +20,7 @@
       </span>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item>{{ user.userName }}</el-dropdown-item>
-        <el-dropdown-item divided>退出</el-dropdown-item>
+        <el-dropdown-item @click.native="logout" divided>退出</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
   </div>
@@ -38,11 +38,31 @@ export default {
     this.loadUserInfo()
   },
   methods: {
+    // 获取用户信息
     async loadUserInfo () {
       const { data } = await getUserInfo()
       if (data.state === 1) {
         this.user = data.content
       }
+    },
+    // 退出登录
+    logout () {
+      this.$confirm('确定是否退出?', '退出提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+      // 退出登录后 清除用户登录信息
+        this.$store.commit('setUser', null)
+        // 退出登录后需要跳转到 登录页
+        this.$router.push({ name: 'login' })
+        this.$message({
+          type: 'success',
+          message: '退出成功!'
+        })
+      }).catch(() => {
+        console.log('cancel logout')
+      })
     }
   }
 }

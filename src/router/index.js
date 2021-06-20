@@ -1,10 +1,10 @@
 // router/index.js
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+
 import store from '@/store'
 import { Message } from 'element-ui'
 
-Vue.prototype.$message = Message
 /*
   为了进行组件加载优化，应设置 `路由懒加载`
   这时可以使用 import()（mdn 、 vue）来进行模块动态加载，
