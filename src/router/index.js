@@ -39,6 +39,13 @@ const routes = [
         name: 'role',
         component: () => import(/* webpackChunkName: 'role' */'@/views/role/index')
       },
+      // 角色菜单管理
+      {
+        path: '/alloc-menu/:roleId',
+        name: 'alloc-menu',
+        component: () => import(/* webpackChunkName: 'alloc-menu' */'@/views/role/AllocMenu'),
+        props: true
+      },
       {
         path: '/menu',
         name: 'menu',

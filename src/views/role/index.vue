@@ -76,7 +76,7 @@
         width="180">
         <template slot-scope="scope">
           <el-row>
-            <el-button type="text">分配菜单</el-button>
+            <el-button type="text" @click="onAllocMenu(scope.row.id)">分配菜单</el-button>
             <el-button type="text">分配资源</el-button>
           </el-row>
           <el-row>
@@ -214,6 +214,15 @@ export default {
       } else {
         this.$message.error(data.mesg + data.code)
       }
+    },
+    // 给角色分配菜单
+    onAllocMenu (roleId) {
+      this.$router.push({
+        name: 'alloc-menu',
+        params: {
+          roleId
+        }
+      })
     }
   },
   filters: {
