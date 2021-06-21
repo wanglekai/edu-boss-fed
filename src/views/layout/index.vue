@@ -1,20 +1,18 @@
 <template>
-  <div>
+  <el-container>
+    <el-aside width="200px">
+      <app-aside />
+    </el-aside>
     <el-container>
-      <el-aside width="200px">
-        <app-aside />
-      </el-aside>
-      <el-container>
-        <el-header>
-          <!-- 头部组件 -->
-          <app-header />
-        </el-header>
-        <el-main>
-          <router-view />
-        </el-main>
-      </el-container>
+      <el-header>
+        <!-- 头部组件 -->
+        <app-header />
+      </el-header>
+      <el-main>
+        <router-view />
+      </el-main>
     </el-container>
-  </div>
+  </el-container>
 </template>
 <script>
 import AppAside from './components/AppAside'
