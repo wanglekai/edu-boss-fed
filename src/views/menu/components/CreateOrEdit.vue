@@ -11,9 +11,9 @@
         <el-form-item label="菜单路径" prop="href">
           <el-input v-model="ruleForm.href"></el-input>
         </el-form-item>
-        <el-form-item label="上级菜单" prop="region">
-          <el-select v-model="ruleForm.region" placeholder="请选择活动区域">
-            <el-option label="无上级菜单" value="-1"></el-option>
+        <el-form-item label="上级菜单" prop="parentId">
+          <el-select v-model="ruleForm.parentId" placeholder="请选择活动区域">
+            <el-option label="无上级菜单" :value="-1"></el-option>
             <!-- <el-option label="区域二" value="beijing"></el-option> -->
             <el-option
               v-for="item in parentMenuList"
@@ -42,7 +42,7 @@
             :max="5"></el-input-number>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm()">立即创建</el-button>
+          <el-button type="primary" @click="submitForm">立即创建</el-button>
           <el-button
             v-if="!isEdit"
             @click="resetForm('ruleForm')"
@@ -74,7 +74,7 @@ export default {
   data () {
     return {
       ruleForm: {
-        parentId: 1,
+        parentId: -1,
         name: '',
         href: '',
         icon: '',
