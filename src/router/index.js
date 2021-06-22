@@ -70,7 +70,6 @@ const routes = [
       },
       {
         path: '/course',
-        name: 'course',
         component: () => import(/* webpackChunkName: 'course' */'@/views/course/index'),
         children: [
           {

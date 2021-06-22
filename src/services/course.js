@@ -16,3 +16,21 @@ export const changeState = params => {
     params
   })
 }
+// 上传图片
+export const uploadPic = data => {
+  return requset({
+    method: 'POST',
+    url: '/boss/course/upload',
+    data
+  })
+}
+// 通过课程Id获取课程信息
+export const getCourseById = courseId => {
+  return requset({
+    method: 'GET',
+    url: '/boss/course/getCourseById',
+    params: {
+      courseId
+    }
+  })
+}
