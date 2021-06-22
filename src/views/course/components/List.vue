@@ -24,12 +24,17 @@
         </el-form>
       </el-col>
       <el-col :span="2">
-        <el-button type="primary" icon="el-icon-plus">新建课程</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          @click="$router.push({ name: 'create-course' })">
+          新建课程</el-button>
       </el-col>
     </el-row>
     <!-- 课程列表 -->
     <el-table
       :data="tableData"
+      v-loading="loading"
       stripe
       style="width: 100%">
       <el-table-column
@@ -71,7 +76,14 @@
             :type="scope.row.status===1?'danger':'success'"
             @click="changeCourseStatus(scope.row)">
             {{scope.row.status===1?'下架':'上架'}}</el-button>
-          <el-button size="small">编辑</el-button>
+          <el-button
+            size="small"
+            @click="$router.push({
+              name: 'edit-course',
+              params: {
+                courseId: scope.row.id
+              }
+            })">编辑</el-button>
           <el-button size="small">内容管理</el-button>
         </template>
       </el-table-column>
@@ -107,7 +119,8 @@ export default {
         pageSize: 15,
         courseName: ''
       },
-      disabled: false
+      disabled: false,
+      loading: false
     }
   },
   watch: {
@@ -131,6 +144,7 @@ export default {
   methods: {
     // 加载课程列表
     async loadCourses () {
+      this.loading = true
       const { data } = await getQueryCourses(this.reqData)
       if (data.code === '000000') {
         this.tableData = data.data.records
@@ -138,6 +152,7 @@ export default {
       } else {
         this.$message.error(data.code + data.mesg)
       }
+      this.loading = false
     },
     // 改变获取 每页展示的条数
     handleSizeChange (val) {

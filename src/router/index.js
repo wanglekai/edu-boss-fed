@@ -71,7 +71,27 @@ const routes = [
       {
         path: '/course',
         name: 'course',
-        component: () => import(/* webpackChunkName: 'course' */'@/views/course/index')
+        component: () => import(/* webpackChunkName: 'course' */'@/views/course/index'),
+        children: [
+          {
+            path: '',
+            name: 'course',
+            component: () => import(/* webpackChunkName: 'course' */'@/views/course/components/List')
+          },
+          {
+            // 新建课程
+            path: 'create',
+            name: 'create-course',
+            component: () => import(/* webpackChunkName: 'create-course' */'@/views/course/create')
+          },
+          {
+            // 编辑课程
+            path: 'edit/:courseId',
+            name: 'edit-course',
+            component: () => import(/* webpackChunkName: 'edit-course' */'@/views/course/edit'),
+            props: true
+          }
+        ]
       },
       {
         path: '/user',
