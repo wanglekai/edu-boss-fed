@@ -79,6 +79,7 @@ export default {
       })
     },
     onReset () {
+      this.checkedKeys = []
       this.$refs.tree.setCheckedKeys([])
     },
     onChecked (itemDate, target) {
