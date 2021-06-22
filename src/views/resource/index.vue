@@ -1,3 +1,4 @@
+<!-- /资源管理/权限管理 -->
 <template>
   <div class="resource">
     <el-form ref="form" :model="form" label-width="80px">
@@ -162,13 +163,6 @@ export default {
     // 重置查询提条件
     onReset () {
       this.$refs.form.resetFields()
-    }
-  },
-  // 时间过滤器
-  filters: {
-    dateFormat (date) {
-      date = new Date(date)
-      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`
     }
   }
 }

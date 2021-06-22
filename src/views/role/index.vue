@@ -1,3 +1,4 @@
+<!-- /资源管理/角色管理 -->
 <template>
   <el-card class="box-card role-container">
     <div slot="header" class="clearfix header">
@@ -223,12 +224,6 @@ export default {
           roleId
         }
       })
-    }
-  },
-  filters: {
-    dateFormat (date) {
-      date = new Date(date)
-      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`
     }
   }
 }

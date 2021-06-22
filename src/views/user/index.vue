@@ -1,3 +1,4 @@
+<!-- /用户管理/ -->
 <template>
   <div class="user-container">
     <el-form v-model="reqData">
@@ -52,6 +53,9 @@
       <el-table-column
         prop="createTime"
         label="注册时间">
+        <template slot-scope="scope">
+          {{ scope.row.createTime | dateFormat }}
+        </template>
       </el-table-column>
       <el-table-column
         prop="status"
