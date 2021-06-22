@@ -1,8 +1,13 @@
 <template>
-  <div>course 课程管理</div>
+  <course-list />
 </template>
 <script>
+import CourseList from './components/List'
+
 export default {
-  name: 'course'
+  name: 'CourseIndex',
+  components: {
+    CourseList
+  }
 }
 </script>
