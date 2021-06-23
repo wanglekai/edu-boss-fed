@@ -3,7 +3,7 @@
     <div class="header">
       <el-page-header
         @back="$router.push({ name: 'course' })"
-        :content="'title'" />
+        :content="title" />
       <el-button type="primary">+ 添加阶段</el-button>
     </div>
     <el-card>
@@ -11,6 +11,7 @@
         :data="data"
         :props="defaultProps"
         draggable
+        v-loading="loading"
         :allow-drop="handleAllowDrop"
         @node-drop="handleNodeDrop">
         <!-- <span class="custom-tree-node" slot-scope="{ node, data }"> -->
@@ -37,6 +38,10 @@ import {
   saveOrUpdateSection,
   saveOrUpdateLesson
 } from '@/services/course-section'
+import {
+  getCourseById
+} from '@/services/course'
+
 export default {
   name: 'CourseSection',
   props: {
@@ -46,6 +51,7 @@ export default {
     }
   },
   created () {
+    this.loadCourseInof()
     this.loadSections()
   },
   data () {
@@ -57,7 +63,9 @@ export default {
         label (data) {
           return data.sectionName || data.theme
         }
-      }
+      },
+      loading: false,
+      title: ''
     }
   },
   methods: {
@@ -92,15 +100,19 @@ export default {
       return type !== 'inner' && draggingNode.data.sectionId === dropNode.data.sectionId
     },
     // 设置节点拖动后的数据更新
-    async handleNodeDrop (draggingNode, dropNode, tyoe, event) {
-      // 1. 无论是章节还是课时, dropNode 都有parent(draggingNode.parent 总为 null), 内部有childNodes
-      // - dropNode.parent.childNodes 可获取拖拽项所在列表的所有数据
-      // - 遍历操作
-      // 4. 由于是批量请求，可以使用 Promise.all() 便于进行统一操作
-      //   - 将 map 返回的，由 Axios 调用返回的 Promise 对象组成的数组，传入到 Promise.all() 中
-      //   - 设置 async await 并进行 try..catch 处理
+    // async handleNodeDrop (draggingNode, dropNode, tyoe, event) {
+    async handleNodeDrop (draggingNode, dropNode) {
+      /**
+       * 1. 无论是章节还是课时, dropNode 都有parent(draggingNode.parent 总为 null), 内部有childNodes
+            - dropNode.parent.childNodes 可获取拖拽项所在列表的所有数据
+            - 遍历操作
+         4. 由于是批量请求，可以使用 Promise.all() 便于进行统一操作
+            - 将 map 返回的，由 Axios 调用返回的 Promise 对象组成的数组，传入到 Promise.all() 中
+            - 设置 async await 并进行 try..catch 处理
+       */
       try {
         await Promise.all(dropNode.parent.childNodes.map((item, index) => {
+          this.loading = true
           // 2. 对章节与课时进行分别处理
           //   - 除了 draggingNode.data.sectionId 外，draggingNode.lessonDTOS 也可以判断
           if (draggingNode.data.lessonDTOS) {
@@ -122,6 +134,16 @@ export default {
         this.$message.success('数据更新成功')
       } catch (err) {
         this.$message.success('数据更新失败', err)
+      }
+      this.loading = false
+    },
+    // 获取课程信息， 为了拿到 title ，要 发两个请求，无语啊，获取章节的时候 不能给一下 标题吗
+    async loadCourseInof () {
+      const { data } = await getCourseById(this.$route.params.courseId)
+      if (data.code === '000000') {
+        this.title = data.data.courseName
+      } else {
+        this.$message.error('获取课程信息 Error, ' + data.code + data.mesg)
       }
     }
   }
