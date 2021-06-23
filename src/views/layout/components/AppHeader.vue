@@ -2,11 +2,15 @@
 <template>
   <div class="app-header">
     <!-- 面包屑组件 -->
-    <el-breadcrumb separator="/">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item><a href="/">活动管理</a></el-breadcrumb-item>
-      <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-      <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+      <el-breadcrumb-item
+        v-for='(item,index) in breadList'
+        :key='index'
+        @click.native="breadcrumbClick(item)"
+        style="cursor: pointer">
+        <span v-if='item.name'>{{item.title}}</span>
+      </el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 右侧下拉菜单 -->
     <el-dropdown>
@@ -32,10 +36,20 @@ import { getUserInfo } from '@/services/user'
 export default {
   name: 'AppHeader',
   data () {
-    return { user: {} }
+    return {
+      user: {},
+      currentTitle: '',
+      breadList: []
+    }
   },
   created () {
     this.loadUserInfo()
+    this.getBreadcrumb()
+  },
+  watch: {
+    $route () {
+      this.getBreadcrumb()
+    }
   },
   methods: {
     // 获取用户信息
@@ -44,6 +58,11 @@ export default {
       if (data.state === 1) {
         this.user = data.content
       }
+    },
+    breadcrumbClick (item) {
+      this.$router.push({
+        path: item.path
+      })
     },
     // 退出登录
     logout () {
@@ -63,6 +82,31 @@ export default {
       }).catch(() => {
         console.log('cancel logout')
       })
+    },
+    // 面包屑数据处理
+    getBreadcrumb () {
+      var that = this
+      // 由于本项目大部分属于‘一级’页面，所以在设置路由时候，一级页面不设置breadNumber = 1，‘二级’页面以上才设置breadNumber
+      var breadNumber = typeof (this.$route.meta.breadNumber) !== 'undefined' ? this.$route.meta.breadNumber : 1
+      // 获取当前页面的名字和路由，并组合成新的对象
+      var newBread = { name: this.$route.name, path: this.$route.fullPath, title: this.$route.meta.title }
+      var vuexBreadList = [] // 默认初始化面包屑数据
+      if (breadNumber !== 1) {
+        // 当前面包屑breadNumber大于1时才会从vuex中获取值
+        vuexBreadList = that.$store.state.breadListState // 获取breadList数组
+      }
+      if (breadNumber < vuexBreadList.length) {
+        // "回退"面包屑----判断条件：当前路由breadNumber小于vuexBreadList的长度
+        vuexBreadList.splice(breadNumber - vuexBreadList.length, vuexBreadList.length - breadNumber)
+      }
+      if (breadNumber > vuexBreadList.length) {
+        // 添加面包屑----判断条件：当前路由breadNumber大于vuexBreadList的长度
+        vuexBreadList.push(newBread)
+      }
+      // 处理完数据后，将最终的数据更新到vuex（用于页面刷新）
+      that.$store.commit('breadListMutations', vuexBreadList)
+      // 处理完数据后，将最终的数据更新为新的面包屑数组
+      that.breadList = vuexBreadList
     }
   }
 }

@@ -32,41 +32,48 @@ const routes = [
       {
         path: '',
         name: 'home',
-        component: () => import(/* webpackChunkName: 'home' */'@/views/home/index')
+        component: () => import(/* webpackChunkName: 'home' */'@/views/home/index'),
+        meta: { title: '首页' }
       },
       {
         path: '/role',
         name: 'role',
-        component: () => import(/* webpackChunkName: 'role' */'@/views/role/index')
+        component: () => import(/* webpackChunkName: 'role' */'@/views/role/index'),
+        meta: { title: '角色管理' }
       },
       // 角色菜单管理
       {
         path: '/alloc-menu/:roleId',
         name: 'alloc-menu',
         component: () => import(/* webpackChunkName: 'alloc-menu' */'@/views/role/AllocMenu'),
+        meta: { title: '角色菜单管理' },
         props: true
       },
       {
         path: '/menu',
         name: 'menu',
-        component: () => import(/* webpackChunkName: 'menu' */'@/views/menu/index')
+        component: () => import(/* webpackChunkName: 'menu' */'@/views/menu/index'),
+        meta: { title: '菜单管理', breadNumber: 1 }
       },
       {
         // 添加菜单
         path: '/menu/create',
         name: 'menu-create',
-        component: () => import(/* webpackChunkName: 'menu-create' */'@/views/menu/create')
+        component: () => import(/* webpackChunkName: 'menu-create' */'@/views/menu/create'),
+        meta: { title: '添加菜单', breadNumber: 2 }
       },
       {
         // 编辑菜单
-        path: '/menu/:id/edit',
+        path: '/menu/edit/:id',
         name: 'menu-edit',
-        component: () => import(/* webpackChunkName: 'menu-edit' */'@/views/menu/edit')
+        component: () => import(/* webpackChunkName: 'menu-edit' */'@/views/menu/edit'),
+        meta: { title: '编辑菜单', breadNumber: 2 }
       },
       {
         path: '/resource',
         name: 'resource',
-        component: () => import(/* webpackChunkName: 'resource' */'@/views/resource/index')
+        component: () => import(/* webpackChunkName: 'resource' */'@/views/resource/index'),
+        meta: { title: '资源管理' }
       },
       {
         path: '/course',
@@ -75,19 +82,22 @@ const routes = [
           {
             path: '',
             name: 'course',
-            component: () => import(/* webpackChunkName: 'course' */'@/views/course/components/List')
+            component: () => import(/* webpackChunkName: 'course' */'@/views/course/components/List'),
+            meta: { title: '课程管理', breadNumber: 1 }
           },
           {
             // 新建课程
             path: 'create',
             name: 'create-course',
-            component: () => import(/* webpackChunkName: 'create-course' */'@/views/course/create')
+            component: () => import(/* webpackChunkName: 'create-course' */'@/views/course/create'),
+            meta: { title: '新增课程', breadNumber: 2 }
           },
           {
             // 编辑课程
             path: 'edit/:courseId',
             name: 'edit-course',
             component: () => import(/* webpackChunkName: 'edit-course' */'@/views/course/edit'),
+            meta: { title: '编辑课程', breadNumber: 2 },
             props: true
           }
         ]
@@ -95,17 +105,20 @@ const routes = [
       {
         path: '/user',
         name: 'user',
-        component: () => import(/* webpackChunkName: 'user' */'@/views/user/index')
+        component: () => import(/* webpackChunkName: 'user' */'@/views/user/index'),
+        meta: { title: '用户管理' }
       },
       {
         path: '/advert',
         name: 'advert',
-        component: () => import(/* webpackChunkName: 'advert' */'@/views/advert/index')
+        component: () => import(/* webpackChunkName: 'advert' */'@/views/advert/index'),
+        meta: { title: '广告管理' }
       },
       {
         path: '/advert-space',
         name: 'advert-space',
-        component: () => import(/* webpackChunkName: 'advert-space' */'@/views/advert-space/index')
+        component: () => import(/* webpackChunkName: 'advert-space' */'@/views/advert-space/index'),
+        meta: { title: '广告位管理' }
       }
     ]
   },
