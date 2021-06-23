@@ -289,23 +289,27 @@ export default {
       const { data } = await getCourseById(this.$route.params.courseId)
       if (data.code === '000000') {
         this.form = data.data
+        this.changeStatus(this.form.status)
       } else {
         this.$message.error('获取课程信息 Error, ' + data.code + data.mesg)
       }
     },
     // 保存或更新 课程信息
     async handleOnSave () {
-      // form.status 保存的是 Boolean 需要改为数字
-      if (this.form.status === false) {
-        this.form.status = 0
-      } else {
-        this.form.status = 1
-      }
+      this.changeStatus(this.form.status)
       const { data } = await saveOrUpdateCourse(this.form)
       // console.log(data)
       if (data.code === '000000') {
         this.$message.success(`${this.isEdit ? '更新' : '新建'} 成功`)
         this.$router.push({ name: 'course' })
+      }
+    },
+    changeStatus (status) {
+      // form.status 保存的是 Boolean 需要改为数字
+      if (typeof status === 'number') {
+        this.form.status = Boolean(status)
+      } else {
+        this.form.status = Number(status)
       }
     }
   }
