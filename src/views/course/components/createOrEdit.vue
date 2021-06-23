@@ -28,35 +28,35 @@
         <el-row v-show="currentStep === 0">
           <el-form-item label="课程名称">
             <el-input
-              v-model.trim="form.courseName"
+              v-model="form.courseName"
               maxlength="50"
               clearable
               show-word-limit/>
           </el-form-item>
           <el-form-item label="简介">
             <el-input
-              v-model.trim="form.brief"
+              v-model="form.brief"
               maxlength="100"
               clearable
               show-word-limit/>
           </el-form-item>
           <el-form-item label="讲师姓名">
             <el-input
-              v-model.trim="form.teacherDTO.teacherName"
+              v-model="form.teacherDTO.teacherName"
               maxlength="50"
               clearable
               show-word-limit/>
           </el-form-item>
           <el-form-item label="职位">
             <el-input
-              v-model.trim="form.teacherDTO.position"
+              v-model="form.teacherDTO.position"
               maxlength="50"
               clearable
               show-word-limit/>
           </el-form-item>
           <el-form-item label="讲师简介">
             <el-input
-              v-model.trim="form.teacherDTO.description"
+              v-model="form.teacherDTO.description"
               maxlength="100"
               clearable
               show-word-limit/>
@@ -149,11 +149,8 @@
         <!-- 课程详情 -->
         <el-row v-show="currentStep === 4">
           <el-form-item>
-            <el-input
-              type="textarea"
-              autosize
-              placeholder="请输入内容"
-              v-model="form.courseDescriptionMarkDown" />
+            <!-- <component :is="'EditIndex'" v-model="form.courseDescriptionMarkDown"/> -->
+            <edit-index v-model="form.courseDescriptionMarkDown" />
           </el-form-item>
           <el-form-item label="是否上架" class="switch-status">
             <el-switch
@@ -189,6 +186,7 @@ import {
   saveOrUpdateCourse
 } from '@/services/course'
 import UploadImage from './UploadImage.vue'
+import EditIndex from '@/components/editor'
 
 export default {
   name: 'EditCourse',
@@ -198,7 +196,7 @@ export default {
       default: false
     }
   },
-  components: { UploadImage },
+  components: { UploadImage, EditIndex },
   computed: {
     title () {
       return this.isEdit ? '编辑课程' : '新建课程'
