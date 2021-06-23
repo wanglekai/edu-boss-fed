@@ -99,6 +99,14 @@ const routes = [
             component: () => import(/* webpackChunkName: 'edit-course' */'@/views/course/edit'),
             meta: { title: '编辑课程', breadNumber: 2 },
             props: true
+          },
+          // 内容管理 - ( 课程结构 )
+          {
+            path: 'sections/:courseId',
+            name: 'course-sections',
+            component: () => import(/* webpackChunkName: 'edit-sections' */'@/views/course/section'),
+            meta: { title: '课程结构', breadNumber: 2 },
+            props: true
           }
         ]
       },

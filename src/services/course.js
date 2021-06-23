@@ -29,9 +29,7 @@ export const getCourseById = courseId => {
   return requset({
     method: 'GET',
     url: '/boss/course/getCourseById',
-    params: {
-      courseId
-    }
+    params: { courseId }
   })
 }
 // 保存或者更新课程信息
