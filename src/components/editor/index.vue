@@ -30,9 +30,6 @@ export default {
   methods: {
     initEditor () {
       this.editor = new E(this.$refs.editor)
-      this.editor.create()
-      this.editor.txt.html(this.value)
-
       this.editor.config.customUploadImg = async (resultFiles, insertImgFn) => {
         // resultFiles 是 input 中选中的文件列表
         // insertImgFn 是获取图片 url 后，插入到编辑器的方法
@@ -47,6 +44,8 @@ export default {
       this.editor.config.onchange = content => {
         this.$emit('input', content)
       }
+      this.editor.create()
+      this.editor.txt.html(this.value)
     }
   }
 }
