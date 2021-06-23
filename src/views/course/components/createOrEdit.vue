@@ -23,26 +23,45 @@
       <el-form
         :model="form"
         label-width="80px"
-        :rules="rules"
         ref="form">
         <!-- 课程基本信息 -->
         <el-row v-show="currentStep === 0">
-          <el-form-item label="课程名称" prop="courseName">
-            <el-input v-model="form.courseName" maxlength="50" show-word-limit/>
+          <el-form-item label="课程名称">
+            <el-input
+              v-model.trim="form.courseName"
+              maxlength="50"
+              clearable
+              show-word-limit/>
           </el-form-item>
-          <el-form-item label="简介" prop="brief">
-            <el-input v-model="form.brief" maxlength="100" show-word-limit/>
+          <el-form-item label="简介">
+            <el-input
+              v-model.trim="form.brief"
+              maxlength="100"
+              clearable
+              show-word-limit/>
           </el-form-item>
-          <el-form-item label="讲师姓名" prop="teacherName">
-            <el-input v-model="form.teacherDTO.teacherName" maxlength="50" show-word-limit/>
+          <el-form-item label="讲师姓名">
+            <el-input
+              v-model.trim="form.teacherDTO.teacherName"
+              maxlength="50"
+              clearable
+              show-word-limit/>
           </el-form-item>
-          <el-form-item label="职位" prop="position">
-            <el-input v-model="form.teacherDTO.position" maxlength="50" show-word-limit/>
+          <el-form-item label="职位">
+            <el-input
+              v-model.trim="form.teacherDTO.position"
+              maxlength="50"
+              clearable
+              show-word-limit/>
           </el-form-item>
-          <el-form-item label="讲师简介" prop="description">
-            <el-input v-model="form.teacherDTO.description" maxlength="100" show-word-limit/>
+          <el-form-item label="讲师简介">
+            <el-input
+              v-model.trim="form.teacherDTO.description"
+              maxlength="100"
+              clearable
+              show-word-limit/>
           </el-form-item>
-          <el-form-item label="课程概述" prop="previewFirstField">
+          <el-form-item label="课程概述">
             <el-input
               style="width: 49%;"
               v-model="form.previewFirstField"
@@ -54,7 +73,7 @@
               maxlength="20"
               show-word-limit/>
           </el-form-item>
-          <el-form-item label="课程排序" prop="sortNum">
+          <el-form-item label="课程排序">
             <el-input
               v-model="form.sortNum"
               :min="1"
@@ -66,26 +85,8 @@
         </el-row>
         <!-- 课程封面 -->
         <el-row v-show="currentStep === 1">
-          <el-form-item label="课程封面">
-            <el-upload
-              action="https://jsonplaceholder.typicode.com/posts/"
-              list-type="picture-card"
-              :http-request="handleUpLoad"
-              :on-preview="handlePictureCardPreview"
-              :on-remove="handleRemove">
-              <i class="el-icon-plus"></i>
-              <div>ddd</div>
-            </el-upload>
-          </el-form-item>
-          <el-form-item label="解锁封面">
-            <el-upload
-              action="https://jsonplaceholder.typicode.com/posts/"
-              list-type="picture-card"
-              :on-preview="handlePictureCardPreview"
-              :on-remove="handleRemove">
-              <i class="el-icon-plus"></i>
-            </el-upload>
-          </el-form-item>
+          <upload-image v-model="form.courseListImg" label="课程封面" />
+          <upload-image v-model="form.courseImgUrl" label="解锁封面" />
         </el-row>
         <!-- 销售信息 -->
         <el-row v-show="currentStep === 2">
@@ -147,7 +148,20 @@
         </el-row>
         <!-- 课程详情 -->
         <el-row v-show="currentStep === 4">
-          课程详情
+          <el-form-item>
+            <el-input
+              type="textarea"
+              autosize
+              placeholder="请输入内容"
+              v-model="form.courseDescriptionMarkDown" />
+          </el-form-item>
+          <el-form-item label="是否上架" class="switch-status">
+            <el-switch
+              v-model="form.status"
+              active-color="#13ce66"
+              inactive-color="#ff4949">
+            </el-switch>
+          </el-form-item>
         </el-row>
         <!-- 控制按钮 -->
         <el-form-item class="control-btn">
@@ -161,7 +175,8 @@
             @click="++currentStep">下一步</el-button>
           <el-button
             type="primary"
-            v-show="currentStep === 4">保存</el-button>
+            v-show="currentStep === 4"
+            @click="handleOnSave">保存</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -170,9 +185,10 @@
 
 <script>
 import {
-  uploadPic,
-  getCourseById
+  getCourseById,
+  saveOrUpdateCourse
 } from '@/services/course'
+import UploadImage from './UploadImage.vue'
 
 export default {
   name: 'EditCourse',
@@ -182,6 +198,7 @@ export default {
       default: false
     }
   },
+  components: { UploadImage },
   computed: {
     title () {
       return this.isEdit ? '编辑课程' : '新建课程'
@@ -202,12 +219,12 @@ export default {
         { id: 105, title: '课程详情', icon: 'el-icon-edit-outline' }
       ],
       form: {
-        id: 0,
+        // id: 0,
         courseName: '',
         brief: '',
         teacherDTO: {
-          id: 0,
-          courseId: 0,
+          // id: 0,
+          // courseId: 0,
           teacherName: '',
           teacherHeadPicUrl: '',
           position: '',
@@ -225,70 +242,70 @@ export default {
         sortNum: 0,
         previewFirstField: '',
         previewSecondField: '',
-        status: 0,
+        status: 0, // 0 为草稿， 1为 上架
         sales: 0,
         activityCourse: false,
         activityCourseDTO: {
-          id: 0,
-          courseId: 0,
+          // id: 0,
+          // courseId: 0,
           beginTime: '',
           endTime: '',
           amount: 0,
           stock: 0
         },
         autoOnlineTime: ''
-      },
-      rules: {
-        courseName: [
-          { required: true, message: '请输入课程名称', trigger: 'blur' }
-        ],
-        brief: [
-          { required: true, message: '请输入课程简介', trigger: 'blur' }
-        ],
-        teacherName: [
-          { required: true, message: '请输入讲师姓名', trigger: 'blur' }
-        ],
-        position: [
-          { required: true, message: '请输入讲师职位', trigger: 'blur' }
-        ],
-        description: [
-          { required: true, message: '请输入讲师简介', trigger: 'blur' }
-        ],
-        previewFirstField: [
-          { required: true, message: '请输入课程概述', trigger: 'blur' }
-        ],
-        sortNum: [
-          { required: true, message: '请输入课程排序', trigger: 'blur' }
-        ],
-        discounts: [
-          { required: true, message: '请输入售卖价格', trigger: 'blur' }
-        ]
       }
+    //   rules: {
+    //     courseName: [
+    //       { required: true, message: '请输入课程名称', trigger: 'blur' }
+    //     ],
+    //     brief: [
+    //       { required: true, message: '请输入课程简介', trigger: 'blur' }
+    //     ],
+    //     teacherName: [
+    //       { required: true, message: '请输入讲师姓名', trigger: 'blur' }
+    //     ],
+    //     position: [
+    //       { required: true, message: '请输入讲师职位', trigger: 'blur' }
+    //     ],
+    //     description: [
+    //       { required: true, message: '请输入讲师简介', trigger: 'blur' }
+    //     ],
+    //     previewFirstField: [
+    //       { required: true, message: '请输入课程概述', trigger: 'blur' }
+    //     ],
+    //     sortNum: [
+    //       { required: true, message: '请输入课程排序', trigger: 'blur' }
+    //     ],
+    //     discounts: [
+    //       { required: true, message: '请输入售卖价格', trigger: 'blur' }
+    //     ]
+    //   }
     }
   },
   methods: {
-    // 点击文件列表中已上传的文件时的钩子
-    handlePictureCardPreview (file) {
-      console.log(file)
-    },
-    handleRemove (file, fileList) {
-      console.log(file, fileList)
-    },
-    // 上传图片
-    async handleUpLoad (options) {
-      // console.log(options)
-      const fd = new FormData()
-      fd.append('file', options.file)
-
-      const { data } = await uploadPic(fd)
-      console.log(data)
-    },
+    // 编辑页 通过id 获取课程信息
     async loadCourseInof () {
       const { data } = await getCourseById(this.$route.params.courseId)
       if (data.code === '000000') {
         this.form = data.data
       } else {
         this.$message.error('获取课程信息 Error, ' + data.code + data.mesg)
+      }
+    },
+    // 保存或更新 课程信息
+    async handleOnSave () {
+      // form.status 保存的是 Boolean 需要改为数字
+      if (this.form.status === false) {
+        this.form.status = 0
+      } else {
+        this.form.status = 1
+      }
+      const { data } = await saveOrUpdateCourse(this.form)
+      // console.log(data)
+      if (data.code === '000000') {
+        this.$message.success(`${this.isEdit ? '更新' : '新建'} 成功`)
+        this.$router.push({ name: 'course' })
       }
     }
   }

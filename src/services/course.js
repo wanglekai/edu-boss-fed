@@ -34,3 +34,11 @@ export const getCourseById = courseId => {
     }
   })
 }
+// 保存或者更新课程信息
+export const saveOrUpdateCourse = data => {
+  return requset({
+    method: 'POST',
+    url: '/boss/course/saveOrUpdateCourse',
+    data
+  })
+}
