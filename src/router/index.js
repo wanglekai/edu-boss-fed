@@ -32,8 +32,8 @@ const routes = [
       {
         path: '',
         name: 'home',
-        component: () => import(/* webpackChunkName: 'home' */'@/views/home/index'),
-        meta: { title: '首页' }
+        component: () => import(/* webpackChunkName: 'home' */'@/views/course/components/List'),
+        meta: { title: '' }
       },
       {
         path: '/role',
