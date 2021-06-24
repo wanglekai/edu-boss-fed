@@ -22,12 +22,18 @@
           <span v-if="data.sectionName" class="actions">
             <el-button size="small" @click="editStage(node, data)">编辑</el-button>
             <el-button size="small" type="primary">添加课时</el-button>
-            <el-button size="small">{{currentStatus(data.status)}}</el-button>
+            <el-button size="small" @click.stop>{{currentStatus(data.status)}}</el-button>
           </span>
           <span v-else class="actions">
             <el-button size="small">编辑</el-button>
-            <el-button size="small" type="success">上传视频</el-button>
-            <el-button size="small">{{currentStatus(data.status)}}</el-button>
+            <el-button size="small"
+              type="success"
+              @click.stop="$router.push({
+                name: 'add-video',
+                params: { courseId },
+                query: { lessonId: data.id }
+              })">上传视频</el-button>
+            <el-button @click.stop size="small">{{currentStatus(data.status)}}</el-button>
           </span>
         </div>
       </el-tree>

@@ -107,6 +107,13 @@ const routes = [
             component: () => import(/* webpackChunkName: 'edit-sections' */'@/views/course/section'),
             meta: { title: '课程结构', breadNumber: 2 },
             props: true
+          },
+          {
+            path: 'add-video/:courseId',
+            name: 'add-video',
+            component: () => import(/* webpackChunkName: 'add-video' */'@/views/course/uploadVideo'),
+            meta: { title: '上传视频', breadNumber: 3 },
+            props: true
           }
         ]
       },
