@@ -1,11 +1,13 @@
+<!-- 课程/课时 - 管理 -->
 <template>
   <div class="course-sections">
     <div class="header">
       <el-page-header
         @back="$router.push({ name: 'course' })"
-        :content="title" />
-      <el-button type="primary">+ 添加阶段</el-button>
+        :content="courseName" />
+      <el-button type="primary" @click="addStage">+ 添加阶段</el-button>
     </div>
+    <!-- 课程阶段/课程章节 列表 -->
     <el-card>
       <el-tree
         :data="data"
@@ -18,7 +20,7 @@
         <div class="inner" slot-scope="{ node, data }">
           <span>{{ node.label }}</span>
           <span v-if="data.sectionName" class="actions">
-            <el-button size="small">编辑</el-button>
+            <el-button size="small" @click="editStage(node, data)">编辑</el-button>
             <el-button size="small" type="primary">添加课时</el-button>
             <el-button size="small">{{currentStatus(data.status)}}</el-button>
           </span>
@@ -30,6 +32,36 @@
         </div>
       </el-tree>
     </el-card>
+    <!-- 添加编辑 阶段 dialog -->
+    <el-dialog
+      title="章节信息"
+      :visible.sync="stageDialog"
+      width="50%">
+      <el-form
+        label-width="100px"
+        ref="stageForm"
+        :model="stageForm"
+        :rules="stageFormRules">
+        <el-form-item label="课程名称" prop="courseName">
+          <el-input v-model="stageForm.courseName" disabled />
+        </el-form-item>
+        <el-form-item label="章节名称" prop="sectionName">
+          <el-input v-model="stageForm.sectionName" />
+        </el-form-item>
+        <el-form-item label="章节描述" prop="description">
+          <el-input type="textarea" v-model="stageForm.description" />
+        </el-form-item>
+        <el-form-item label="章节排序" prop="orderNum">
+          <el-input type="number" v-model="stageForm.orderNum">
+            <template slot="append">数字控制排序，数字越大越靠后</template>
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="stageDialog = false">取 消</el-button>
+        <el-button type="primary" @click="confirmSave">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -45,6 +77,7 @@ import {
 export default {
   name: 'CourseSection',
   props: {
+    // 课程id
     courseId: {
       type: [String, Number],
       required: true
@@ -65,7 +98,24 @@ export default {
         }
       },
       loading: false,
-      title: ''
+      courseName: '',
+      stageDialog: false,
+      // 章节表单数据
+      stageForm: {
+        courseName: '',
+        sectionName: '',
+        description: '',
+        orderNum: 0
+      },
+      stageFormRules: {
+        courseName: [
+          { required: true, message: '请输入课程名称', trigger: 'blur' }
+        ],
+        sectionName: [
+          { required: true, message: '请输入章节名称', trigger: 'blur' }
+        ]
+      },
+      isStage: true
     }
   },
   methods: {
@@ -137,14 +187,51 @@ export default {
       }
       this.loading = false
     },
-    // 获取课程信息， 为了拿到 title ，要 发两个请求，无语啊，获取章节的时候 不能给一下 标题吗
+    // 获取课程信息
     async loadCourseInof () {
       const { data } = await getCourseById(this.$route.params.courseId)
       if (data.code === '000000') {
-        this.title = data.data.courseName
+        this.courseName = data.data.courseName
       } else {
         this.$message.error('获取课程信息 Error, ' + data.code + data.mesg)
       }
+    },
+    // 添加阶段
+    addStage () {
+      this.stageForm.courseName = this.courseName
+      // 新增阶段的时候 不能有课程id 值
+      this.stageForm.sectionName = ''
+      this.stageForm.description = ''
+      this.stageForm.orderNum = 0
+      if (this.stageForm.id !== undefined) delete this.stageForm.id
+      this.stageDialog = true
+    },
+    async confirmSave () {
+      try {
+        await this.$refs.stageForm.validate()
+        this.stageForm.courseId = this.courseId
+
+        const { data } = await saveOrUpdateSection(this.stageForm)
+        if (data.code === '000000') {
+          this.$message.success('保存成功')
+          this.stageDialog = false
+          this.loadSections()
+          this.stageForm.sectionName = ''
+          this.stageForm.description = ''
+          this.stageForm.orderNum = 0
+        }
+      } catch (error) {
+        console.log('保存课程章节 Error', error)
+      }
+    },
+    // 编辑 阶段
+    editStage (node, data) {
+      this.stageForm.courseName = this.courseName
+      this.stageForm.sectionName = data.sectionName
+      this.stageForm.description = data.description
+      this.stageForm.orderNum = data.orderNum
+      this.stageForm.id = data.id
+      this.stageDialog = true
     }
   }
 }
